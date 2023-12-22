@@ -126,6 +126,7 @@ func (p *processor) Execute(db *DB) *DB {
 		}
 	}
 
+	// @: 执行 callback 的关键点
 	for _, f := range p.fns {
 		f(db)
 	}

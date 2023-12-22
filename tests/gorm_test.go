@@ -8,12 +8,25 @@ import (
 	"gorm.io/gorm"
 )
 
+type Student struct {
+	ID   int
+	Name string
+}
+
 func TestOpen(t *testing.T) {
-	dsn := "gorm:gorm@tcp(localhost:9910)/gorm?loc=Asia%2FHongKong" // invalid loc
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err == nil {
+	dsn := "root:my-secret-pw@tcp(9.135.228.214:3306)/hellodb?charset=utf8mb4&parseTime=True" // invalid loc
+	mysqlDb, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
 		t.Fatalf("should returns error but got nil")
 	}
+	stu := &Student{}
+	result := mysqlDb.First(stu, 1)
+	if result.Error != nil {
+		t.Error(err)
+	} else {
+		t.Log(stu)
+	}
+	t.Log(mysqlDb)
 }
 
 func TestReturningWithNullToZeroValues(t *testing.T) {

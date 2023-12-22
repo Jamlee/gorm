@@ -170,6 +170,7 @@ func Open(dialector Dialector, opts ...Option) (db *DB, err error) {
 		config.cacheStore = &sync.Map{}
 	}
 
+	// @: clone初始化1
 	db = &DB{Config: config, clone: 1}
 
 	db.callbacks = initializeCallbacks(db)
@@ -194,6 +195,7 @@ func Open(dialector Dialector, opts ...Option) (db *DB, err error) {
 		db.ConnPool = preparedStmt
 	}
 
+	// @: Db 为什么需要一个 Statement 对象?
 	db.Statement = &Statement{
 		DB:       db,
 		ConnPool: db.ConnPool,
@@ -397,6 +399,7 @@ func (db *DB) DB() (*sql.DB, error) {
 
 func (db *DB) getInstance() *DB {
 	if db.clone > 0 {
+		// @: 例如db.Limit(1).Order(xxx) 调用limit进入到这里, order 就是直接进入else。
 		tx := &DB{Config: db.Config, Error: db.Error}
 
 		if db.clone == 1 {
